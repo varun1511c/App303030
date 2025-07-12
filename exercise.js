@@ -21,15 +21,19 @@ function loadExercise() {
   videoElement.querySelector('source').src = `gifs/exercise${currentExercise}.mp4`;
   videoElement.load(); // Reload video source
 
-  // Update button text and state
+  // Update "Next" button
   if (currentExercise === totalExercises) {
     nextBtn.textContent = "🎉 Hurry! You're done for today. See you tomorrow!";
   } else {
     nextBtn.textContent = "Next ➡️";
   }
 
-  // Disable "Previous" on first exercise
-  prevBtn.disabled = currentExercise === 1;
+  // Update "Previous" button
+  if (currentExercise === 1) {
+    prevBtn.textContent = "🏠 Home";
+  } else {
+    prevBtn.textContent = "⬅️ Previous";
+  }
 
   // Mark the day as in-progress if not yet complete
   if (localStorage.getItem(`day${currentDay}_status`) !== 'complete') {
@@ -53,7 +57,10 @@ nextBtn.addEventListener('click', () => {
 
 // When user clicks "Previous"
 prevBtn.addEventListener('click', () => {
-  if (currentExercise > 1) {
+  if (currentExercise === 1) {
+    // If on first exercise, go home
+    window.location.href = 'index.html';
+  } else {
     currentExercise--;
     localStorage.setItem(`day${currentDay}_progress`, currentExercise);
     loadExercise();
