@@ -17,45 +17,71 @@ if (!currentDay || currentDay < 1 || currentDay > 30) {
 }
 
 const totalExercises = 30;
-let currentExercise = parseInt(localStorage.getItem(`day${currentDay}_progress`)) || 1;
-
-// Track if done was clicked for current exercise
+let currentExercise = findFirstIncompleteExercise(currentDay);
 let doneClicked = false;
 
+// Helper: Key for done status
+function getDoneKey(day, exercise) {
+  return `day${day}_exercise${exercise}_done`;
+}
+
+// Helper: Find the first exercise not done
+function findFirstIncompleteExercise(day) {
+  for (let i = 1; i <= totalExercises; i++) {
+    if (localStorage.getItem(getDoneKey(day, i)) !== 'true') {
+      return i;
+    }
+  }
+  return totalExercises; // All done, return last
+}
+
+// Load current exercise
 function loadExercise() {
   titleElement.textContent = `Day ${currentDay} - Exercise ${currentExercise}`;
   videoElement.querySelector('source').src = `gifs/exercise${currentExercise}.mp4`;
   videoElement.load();
 
-  // Update Previous button label
   prevBtn.textContent = currentExercise === 1 ? "Home" : "Previous";
 
-  // Reset button states
-  doneClicked = false;
+  doneClicked = localStorage.getItem(getDoneKey(currentDay, currentExercise)) === 'true';
   updateButtonStates();
 
-  // Mark the day as in-progress if not complete
   if (localStorage.getItem(`day${currentDay}_status`) !== 'complete') {
     localStorage.setItem(`day${currentDay}_status`, 'in-progress');
   }
+
+  checkIfDayComplete();
 }
 
+// Button UI state
 function updateButtonStates() {
   if (doneClicked) {
     doneBtn.classList.add('selected');
     skipBtn.classList.remove('selected');
-
     skipNextBtn.textContent = "Done Next";
     skipNextBtn.classList.remove('orange');
     skipNextBtn.classList.add('green');
   } else {
     doneBtn.classList.remove('selected');
     skipBtn.classList.add('selected');
-
     skipNextBtn.textContent = "Skip to Next";
     skipNextBtn.classList.remove('green');
     skipNextBtn.classList.add('orange');
   }
+}
+
+// Check if all exercises are done, then mark day complete
+function checkIfDayComplete() {
+  for (let i = 1; i <= totalExercises; i++) {
+    if (localStorage.getItem(getDoneKey(currentDay, i)) !== 'true') {
+      localStorage.setItem(`day${currentDay}_status`, 'in-progress');
+      return;
+    }
+  }
+
+  // All done
+  localStorage.setItem(`day${currentDay}_status`, 'complete');
+  localStorage.removeItem(`day${currentDay}_progress`);
 }
 
 // Event: Previous
@@ -64,7 +90,6 @@ prevBtn.addEventListener('click', () => {
     window.location.href = 'index.html';
   } else {
     currentExercise--;
-    // Do NOT update progress when going back
     loadExercise();
   }
 });
@@ -72,31 +97,34 @@ prevBtn.addEventListener('click', () => {
 // Event: Done
 doneBtn.addEventListener('click', () => {
   doneClicked = true;
+  localStorage.setItem(getDoneKey(currentDay, currentExercise), 'true');
   updateButtonStates();
+  checkIfDayComplete();
 });
 
 // Event: Skip
 skipBtn.addEventListener('click', () => {
   doneClicked = false;
+  localStorage.removeItem(getDoneKey(currentDay, currentExercise));
   updateButtonStates();
+  checkIfDayComplete();
 });
 
-// Event: Skip to Next / Done Next
+// Event: Next (Skip or Done)
 skipNextBtn.addEventListener('click', () => {
   if (currentExercise < totalExercises) {
     currentExercise++;
-
-    // Only update progress if we're ahead of stored value
-    const savedProgress = parseInt(localStorage.getItem(`day${currentDay}_progress`)) || 1;
-    localStorage.setItem(`day${currentDay}_progress`, Math.max(savedProgress, currentExercise));
-
     loadExercise();
   } else {
-    // Final exercise completed
-    localStorage.setItem(`day${currentDay}_status`, 'complete');
-    localStorage.removeItem(`day${currentDay}_progress`);
+    checkIfDayComplete();
     window.location.href = 'index.html';
   }
 });
+
+// Event: Home Button
+document.getElementById('home-btn').addEventListener('click', () => {
+  window.location.href = 'index.html';
+});
+
 
 loadExercise();
