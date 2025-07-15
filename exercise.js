@@ -1,7 +1,11 @@
 const videoElement = document.getElementById('exercise-video');
 const titleElement = document.getElementById('exercise-title');
-const nextBtn = document.getElementById('next-btn');
+
+// Buttons
 const prevBtn = document.getElementById('prev-btn');
+const doneBtn = document.getElementById('done-btn');
+const skipBtn = document.getElementById('skip-btn');
+const skipNextBtn = document.getElementById('next-btn');
 
 // Get current day from URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -15,55 +19,83 @@ if (!currentDay || currentDay < 1 || currentDay > 30) {
 const totalExercises = 30;
 let currentExercise = parseInt(localStorage.getItem(`day${currentDay}_progress`)) || 1;
 
-// Load the current exercise
+// Track if done was clicked for current exercise
+let doneClicked = false;
+
 function loadExercise() {
   titleElement.textContent = `Day ${currentDay} - Exercise ${currentExercise}`;
   videoElement.querySelector('source').src = `gifs/exercise${currentExercise}.mp4`;
-  videoElement.load(); // Reload video source
+  videoElement.load();
 
-  // Update "Next" button
-  if (currentExercise === totalExercises) {
-    nextBtn.textContent = "🎉 Hurry! You're done for today. See you tomorrow!";
-  } else {
-    nextBtn.textContent = "Next ➡️";
-  }
+  // Update Previous button label
+  prevBtn.textContent = currentExercise === 1 ? "Home" : "Previous";
 
-  // Update "Previous" button
-  if (currentExercise === 1) {
-    prevBtn.textContent = "🏠 Home";
-  } else {
-    prevBtn.textContent = "⬅️ Previous";
-  }
+  // Reset button states
+  doneClicked = false;
+  updateButtonStates();
 
-  // Mark the day as in-progress if not yet complete
+  // Mark the day as in-progress if not complete
   if (localStorage.getItem(`day${currentDay}_status`) !== 'complete') {
     localStorage.setItem(`day${currentDay}_status`, 'in-progress');
   }
 }
 
-// When user clicks "Next"
-nextBtn.addEventListener('click', () => {
-  if (currentExercise < totalExercises) {
-    currentExercise++;
-    localStorage.setItem(`day${currentDay}_progress`, currentExercise);
-    loadExercise();
-  } else {
-    // Final step: mark day as complete and return to calendar
-    localStorage.setItem(`day${currentDay}_status`, 'complete');
-    localStorage.removeItem(`day${currentDay}_progress`);
-    window.location.href = 'index.html';
-  }
-});
+function updateButtonStates() {
+  if (doneClicked) {
+    doneBtn.classList.add('selected');
+    skipBtn.classList.remove('selected');
 
-// When user clicks "Previous"
+    skipNextBtn.textContent = "Done Next";
+    skipNextBtn.classList.remove('orange');
+    skipNextBtn.classList.add('green');
+  } else {
+    doneBtn.classList.remove('selected');
+    skipBtn.classList.add('selected');
+
+    skipNextBtn.textContent = "Skip to Next";
+    skipNextBtn.classList.remove('green');
+    skipNextBtn.classList.add('orange');
+  }
+}
+
+// Event: Previous
 prevBtn.addEventListener('click', () => {
   if (currentExercise === 1) {
-    // If on first exercise, go home
     window.location.href = 'index.html';
   } else {
     currentExercise--;
-    localStorage.setItem(`day${currentDay}_progress`, currentExercise);
+    // Do NOT update progress when going back
     loadExercise();
+  }
+});
+
+// Event: Done
+doneBtn.addEventListener('click', () => {
+  doneClicked = true;
+  updateButtonStates();
+});
+
+// Event: Skip
+skipBtn.addEventListener('click', () => {
+  doneClicked = false;
+  updateButtonStates();
+});
+
+// Event: Skip to Next / Done Next
+skipNextBtn.addEventListener('click', () => {
+  if (currentExercise < totalExercises) {
+    currentExercise++;
+
+    // Only update progress if we're ahead of stored value
+    const savedProgress = parseInt(localStorage.getItem(`day${currentDay}_progress`)) || 1;
+    localStorage.setItem(`day${currentDay}_progress`, Math.max(savedProgress, currentExercise));
+
+    loadExercise();
+  } else {
+    // Final exercise completed
+    localStorage.setItem(`day${currentDay}_status`, 'complete');
+    localStorage.removeItem(`day${currentDay}_progress`);
+    window.location.href = 'index.html';
   }
 });
 
