@@ -6,10 +6,28 @@ function buildCalendar() {
   progressSegments.innerHTML = '';
 
   for (let i = 1; i <= 30; i++) {
-    const taskStatus = localStorage.getItem(`day${i}_status`) || 'pending';
-    const progress = parseInt(localStorage.getItem(`day${i}_progress`)) || 0;
-    const isComplete = taskStatus === 'complete';
-    const progressText = isComplete ? '30/30' : `${progress}/30`;
+    let doneCount = 0;
+
+    // Count how many exercises were actually marked as 'done'
+    for (let j = 1; j <= 30; j++) {
+      if (localStorage.getItem(`day${i}_exercise${j}_done`) === 'true') {
+        doneCount++;
+      }
+    }
+
+    // Update status based on real done count
+    let taskStatus = 'pending';
+    if (doneCount === 30) {
+      taskStatus = 'complete';
+      localStorage.setItem(`day${i}_status`, 'complete');
+    } else if (doneCount > 0) {
+      taskStatus = 'in-progress';
+      localStorage.setItem(`day${i}_status`, 'in-progress');
+    } else {
+      localStorage.setItem(`day${i}_status`, 'pending');
+    }
+
+    const progressText = `${doneCount}/30`;
 
     // Create calendar tile
     const dayEl = document.createElement('div');
