@@ -8,18 +8,33 @@
 <body>
   <h1 id="exercise-title">Exercise</h1>
 
-  <!-- Updated to use video instead of image -->
+  <!-- Exercise Video -->
   <video id="exercise-video" width="100%" height="auto" controls autoplay muted loop>
     <source src="" type="video/mp4" />
     Your browser does not support the video tag.
   </video>
 
-  <div id="exercise-controls">
-    <div class="nav-buttons">
-      <button id="prev-btn" class="nav-btn">⬅️ Previous</button>
-      <button id="next-btn" class="nav-btn">Next ➡️</button>
+  <!-- Exercise Controls -->
+  <!-- Exercise Controls -->
+<div id="exercise-controls">
+  <div class="control-row">
+    <!-- Left Button (Previous/Home) -->
+    <div class="control-side">
+      <button id="prev-btn" class="nav-btn blue">Previous</button>
+    </div>
+
+    <!-- Center Vertical Stack (Done + Skip) -->
+    <div class="control-center">
+      <button id="done-btn" class="nav-btn green">Done</button>
+      <button id="skip-btn" class="nav-btn orange selected">Skip</button>
+    </div>
+
+    <!-- Right Button (Skip to Next / Done Next) -->
+    <div class="control-side">
+      <button id="next-btn" class="nav-btn blue">Skip to Next</button>
     </div>
   </div>
+</div>
 
   <script src="exercise.js"></script>
 </body>
