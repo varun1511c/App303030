@@ -54,35 +54,98 @@ h1 {
 }
 
 #exercise-controls {
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
-#next-btn {
-  padding: 30px 30px;
-  font-size: 45px;
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.nav-buttons {
+/* --- Button Layout --- */
+.control-row {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  align-items: center;
+  gap: 40px;
   margin-top: 30px;
+  flex-wrap: wrap;
 }
 
+/* Side buttons (Previous and Skip to Next) */
+.control-side {
+  flex: 0 0 auto;
+}
+
+/* Center vertical stack (Done + Skip) */
+.control-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Button Styles */
 .nav-btn {
-  font-size: 45px;
-  padding: 16px 30px;
-  background-color: #2196f3;
-  color: white;
+  font-size: 36px;
+  padding: 20px;
+  width: 200px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
+  color: white;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.nav-btn:hover {
+/* Match total height of two stacked buttons */
+.control-side .nav-btn {
+  height: 150px;
+}
+
+/* Button Colors */
+.nav-btn.blue {
+  background-color: #2196f3;
+}
+.nav-btn.blue:hover {
   background-color: #1976d2;
+}
+
+.nav-btn.green {
+  background-color: #4caf50;
+}
+.nav-btn.green:hover {
+  background-color: #388e3c;
+}
+
+.nav-btn.orange {
+  background-color: orange;
+}
+.nav-btn.orange:hover {
+  background-color: darkorange;
+}
+
+/* Selected Button Highlight */
+.nav-btn.selected {
+  border: 4px solid #000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress Bar */
+#progress-segments {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 30px auto;
+  max-width: 800px;
+}
+
+.segment {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: #ccc;
+}
+
+.segment.complete {
+  background-color: #4caf50;
+}
+
+.segment.in-progress {
+  background-color: orange;
 }
