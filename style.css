@@ -149,3 +149,20 @@ h1 {
 .segment.in-progress {
   background-color: orange;
 }
+
+/* Home Button Styling */
+.home-button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+#home-btn.nav-btn.home {
+  width: 680px; /* Adjust as needed to match 3 button columns */
+  font-size: 28px;
+  background-color: #555;
+}
+
+#home-btn.nav-btn.home:hover {
+  background-color: #333;
+}
