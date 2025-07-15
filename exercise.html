@@ -15,26 +15,30 @@
   </video>
 
   <!-- Exercise Controls -->
-  <!-- Exercise Controls -->
-<div id="exercise-controls">
-  <div class="control-row">
-    <!-- Left Button (Previous/Home) -->
-    <div class="control-side">
-      <button id="prev-btn" class="nav-btn blue">Previous</button>
+  <div id="exercise-controls">
+    <div class="control-row">
+      <!-- Left Button (Previous/Home) -->
+      <div class="control-side">
+        <button id="prev-btn" class="nav-btn blue">Previous</button>
+      </div>
+
+      <!-- Center Vertical Stack (Done + Skip) -->
+      <div class="control-center">
+        <button id="done-btn" class="nav-btn green">Done</button>
+        <button id="skip-btn" class="nav-btn orange selected">Skip</button>
+      </div>
+
+      <!-- Right Button (Skip to Next / Done Next) -->
+      <div class="control-side">
+        <button id="next-btn" class="nav-btn blue">Skip to Next</button>
+      </div>
     </div>
 
-    <!-- Center Vertical Stack (Done + Skip) -->
-    <div class="control-center">
-      <button id="done-btn" class="nav-btn green">Done</button>
-      <button id="skip-btn" class="nav-btn orange selected">Skip</button>
-    </div>
-
-    <!-- Right Button (Skip to Next / Done Next) -->
-    <div class="control-side">
-      <button id="next-btn" class="nav-btn blue">Skip to Next</button>
+    <!-- New Home Button -->
+    <div class="home-button-wrapper">
+      <button id="home-btn" class="nav-btn home">🏠 Home</button>
     </div>
   </div>
-</div>
 
   <script src="exercise.js"></script>
 </body>
